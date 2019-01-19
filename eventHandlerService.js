@@ -44,8 +44,7 @@ function isNextRowEmpty(nextRowValues) {
   var empties = nextRowValues.filter(function(value) {
     return String(value) == "" || String(value) == " ";
   });
-  Logger.log("isEmpty");
-  Logger.log(empties);
+
   if (empties.length < 4) {
     return false;
   }
@@ -54,22 +53,26 @@ function isNextRowEmpty(nextRowValues) {
 
 function addHouseToSheets() {
   var sheets = ACTIVE_SPREADSHEET.getSheets();
+  Logger.log(typeof sheets);
+  Logger.log(sheets.length);
+  Logger.log(SELECTED_HOUSE);
 
-  for (var sheet in sheets) {
+  for (var i in sheets) {
+    var sheet = sheets[i];
     var range = [];
-    if (sheet.getName.includes("BALANCE")) {
-      range = sheet.getRange(SELECTED_HOUSE.row - 1, 1);
-    } else {
-      range = sheet.getRange(
-        SELECTED_HOUSE.row - 2,
-        1,
-        1,
-        sheet.getLastColumn()
-      );
+    Logger.log(sheet.getName());
+
+    if (sheet.getName() == "BALANCE") {
+      range = sheet.getRange(SELECTED_HOUSE.row - 1, 1, 1, 2);
+      range.setValues([
+        [SELECTED_HOUSE.data["id house"], SELECTED_HOUSE.data["address"]]
+      ]);
+    } else if (sheet.getName() != "HOUSES") {
+      range = sheet.getRange(SELECTED_HOUSE.row - 2, 1, 1, 2);
+      range.setValues([
+        [SELECTED_HOUSE.data["id house"], SELECTED_HOUSE.data["address"]]
+      ]);
     }
-    range.setValues([
-      [SELECTED_HOUSE.data["id_house"], SELECTED_HOUSE["address"]]
-    ]);
   }
 }
 
